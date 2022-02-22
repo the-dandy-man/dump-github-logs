@@ -8,19 +8,19 @@ function assert(condition, message) {
     }
 }
 
-var github_repo = core.getInput('github_repository');
+var github_repo = core.getInput('github_repository') || process.env.GITHUB_REPOSITORY;
 try {
     assert(typeof github_repo !== 'undefined', "The input github_repository is not set")
 } catch (error) {
     core.setFailed(error.message)
 }
-var github_run_id = core.getInput('github_run_id');
+var github_run_id = core.getInput('github_run_id') || process.env.GITHUB_RUN_ID;
 try {
     assert(typeof github_run_id !== 'undefined', "The input github_run_id is not set")
 } catch (error) {
     core.setFailed(error.message)
 }
-var github_token = core.getInput('github_run_id');
+var github_token = core.getInput('github_token') || process.env.GITHUB_TOKEN;
 try {
     assert(typeof github_run_id !== 'undefined', "The input github_run_id is not set")
 } catch (error) {
