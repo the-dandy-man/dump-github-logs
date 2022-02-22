@@ -1,0 +1,17 @@
+name: "dump github action workflow logs"
+description: "dump logs to stdout"
+author: "David Andrew"
+inputs:
+  github_token:
+    description: "GitHub PAT"
+  github_repository:
+    description: "The github repository to read the workflows logs from"
+  github_run_id:
+    description: "The workflow specific run id to read the logs from"
+
+outputs:
+  result:
+    description: "Result"
+runs:
+  using: "node12"
+  main: "index.js"
