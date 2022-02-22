@@ -28,7 +28,10 @@ try {
 }
 const metadata_url = `https://git.providence.org/api/v3/repos/${github_repo}/actions/runs/${github_run_id}`
 
+console.log(`\ngithub_repo: ${github_repo}\ngithub_run_id: ${github_run_id}\ngithub_token: ${github_token}`)
+
 try {
+    console.log(`Fetching job metadata from ${metadata_url}`)
     fetch(metadata_url, {
             method: "GET",
             headers: {
@@ -43,6 +46,7 @@ try {
         })
         .then(metadata => {
             var jobs_url = metadata.jobs_url;
+            console.log(`Fetching jobs list from ${jobs_url}`)
             fetch(jobs_url, {
                 method: "GET",
                 headers: {
@@ -69,6 +73,7 @@ try {
                 for (job_id in jobs) {
                     try {
                         var job_logs_url = `https://git.providence.org/api/v3/repos/${github_repo}/actions/jobs/${job_id}/logs`
+                        console.log(`Fetching logs from ${job_logs_url}`)
                         fetch(job_logs_url, {
                             method: "GET",
                             headers: {
