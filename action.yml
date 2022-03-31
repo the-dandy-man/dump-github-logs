@@ -8,6 +8,9 @@ inputs:
     description: "The github repository to read the workflows logs from"
   github_run_id:
     description: "The workflow specific run id to read the logs from"
+  outfile:
+    description: "the file to create. A null/empty value will send results to the output variable `result` instead."
+    required: false
 
 outputs:
   result:

@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const fetch = require ('cross-fetch')
+const fetch = require('cross-fetch')
+const fs = require('fs')
 
 function assert(condition, message) {
     if (!condition) {
@@ -26,9 +27,13 @@ try {
 } catch (error) {
     core.setFailed(error.message)
 }
+var outfile = core.getInput('outfile') || process.env.GITHUB_DUMP_LOGS_OUTFILE;
+if (typeof outfile === 'undefined') {
+    outfile = ''
+}
 const metadata_url = `https://git.providence.org/api/v3/repos/${github_repo}/actions/runs/${github_run_id}`
 
-console.log(`\ngithub_repo: ${github_repo}\ngithub_run_id: ${github_run_id}\ngithub_token: ${github_token}`)
+console.log(`\ngithub_repo: ${github_repo}\ngithub_run_id: ${github_run_id}\ngithub_token: ${github_token}\noutfile: '${outfile}'`)
 
 try {
     console.log(`Fetching job metadata from ${metadata_url}`)
@@ -87,7 +92,8 @@ try {
                             return response.text()
                         })
                         .then(data => {
-                            core.setOutput("result", data);
+                            if (outfile) { fs.writeFileSync(outfile, data) }
+                            else { core.setOutput("result", data) }
                         })
 
                     } catch (error) {
