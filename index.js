@@ -66,7 +66,8 @@ try {
             })
             .then(data => {
                 var jobs = {}
-                data.jobs.filter(job => job.id !== 'completed').forEach(job => {
+                data.jobs.filter(job => job.status == 'completed').forEach(job => {
+                    console.log(`adding job '${job.id}/${job.name}' with status '${job.status}' and conclusion '${job.conclusion}'`)
                     jobs[job.id] = {
                         job_id: job.id,
                         job_name: job.name,
@@ -87,23 +88,21 @@ try {
                         })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error(`Job log failed with status ${response.status}`)
+                                throw new Error(`Log request failed with status ${response.status} for job id '${job_id}'`)
                             }
                             return response.text()
                         })
                         .then(data => {
+                            console.log(`Writing data, length=${data.length}`)
                             if (outfile) { fs.writeFileSync(outfile, data) }
                             else { core.setOutput("result", data) }
                         })
-
                     } catch (error) {
-                          core.setFailed(error.message)
-                      }
+                        core.setFailed(error.message)
+                    }
                 }
             })
         })
-
-
 } catch (error) {
     core.setFailed(error.message)
 }
