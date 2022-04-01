@@ -4,10 +4,13 @@ author: "David Andrew"
 inputs:
   github_token:
     description: "GitHub PAT"
+    required: true
   github_repository:
     description: "The github repository to read the workflows logs from"
+    required: true
   github_run_id:
     description: "The workflow specific run id to read the logs from"
+    required: true
   outfile:
     description: "the file to create. A null/empty value will send results to the output variable `result` instead."
     required: false
