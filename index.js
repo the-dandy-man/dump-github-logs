@@ -78,7 +78,7 @@ try {
                 })
                 for (job_id in jobs) {
                     try {
-                        var job_logs_url = `https://git.providence.org/api/v3/repos/${github_repo}/actions/jobs/${job_id}/logs`
+                        var job_logs_url = `${github_server}/repos/${github_repo}/actions/jobs/${job_id}/logs`
                         console.log(`Fetching logs from ${job_logs_url}`)
                         fetch(job_logs_url, {
                             method: "GET",
