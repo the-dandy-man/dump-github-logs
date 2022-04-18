@@ -23,7 +23,7 @@ try {
 }
 var github_token = core.getInput('github_token') || process.env.GITHUB_TOKEN;
 try {
-    assert(typeof github_run_id !== 'undefined', "The input github_run_id is not set")
+    assert(typeof github_token !== 'undefined', "The input github_token is not set")
 } catch (error) {
     core.setFailed(error.message)
 }
@@ -31,7 +31,13 @@ var outfile = core.getInput('outfile') || process.env.GITHUB_DUMP_LOGS_OUTFILE;
 if (typeof outfile === 'undefined') {
     outfile = ''
 }
-const metadata_url = `https://git.providence.org/api/v3/repos/${github_repo}/actions/runs/${github_run_id}`
+var github_server = core.getInput('github_server') || process.env.GITHUB_SERVER;
+try {
+    assert(typeof github_server !== 'undefined', "The input github_server is not set")
+} catch (error) {
+    core.setFailed(error.message)
+}
+const metadata_url = `${github_server}/repos/${github_repo}/actions/runs/${github_run_id}`
 
 console.log(`\ngithub_repo: ${github_repo}\ngithub_run_id: ${github_run_id}\ngithub_token: ${github_token}\noutfile: '${outfile}'`)
 
@@ -78,7 +84,7 @@ try {
                 })
                 for (job_id in jobs) {
                     try {
-                        var job_logs_url = `https://git.providence.org/api/v3/repos/${github_repo}/actions/jobs/${job_id}/logs`
+                        var job_logs_url = `${github_server}/repos/${github_repo}/actions/jobs/${job_id}/logs`
                         console.log(`Fetching logs from ${job_logs_url}`)
                         fetch(job_logs_url, {
                             method: "GET",

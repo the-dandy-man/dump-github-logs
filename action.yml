@@ -14,7 +14,9 @@ inputs:
   outfile:
     description: "the file to create. A null/empty value will send results to the output variable `result` instead."
     required: false
-
+  github_server:
+    default: "https://api.github.com"
+    description: "The endpoint for your GHE server, will default to github.com"
 outputs:
   result:
     description: "Result"
