@@ -8,7 +8,9 @@ inputs:
     description: "The github repository to read the workflows logs from"
   github_run_id:
     description: "The workflow specific run id to read the logs from"
-
+  github_server:
+    default: "https://api.github.com"
+    description: "The endpoint for your GHE server, will default to github.com"
 outputs:
   result:
     description: "Result"
