@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const fetch = require ('cross-fetch')
+const fetch = require('cross-fetch')
+const fs = require('fs')
 
 function assert(condition, message) {
     if (!condition) {
@@ -26,6 +27,10 @@ try {
 } catch (error) {
     core.setFailed(error.message)
 }
+var outfile = core.getInput('outfile') || process.env.GITHUB_DUMP_LOGS_OUTFILE;
+if (typeof outfile === 'undefined') {
+    outfile = ''
+}
 var github_server = core.getInput('github_server') || process.env.GITHUB_SERVER;
 try {
     assert(typeof github_server !== 'undefined', "The input github_server is not set")
@@ -34,7 +39,7 @@ try {
 }
 const metadata_url = `${github_server}/repos/${github_repo}/actions/runs/${github_run_id}`
 
-console.log(`\ngithub_repo: ${github_repo}\ngithub_run_id: ${github_run_id}\ngithub_token: ${github_token}`)
+console.log(`\ngithub_repo: ${github_repo}\ngithub_run_id: ${github_run_id}\ngithub_token: ${github_token}\noutfile: '${outfile}'`)
 
 try {
     console.log(`Fetching job metadata from ${metadata_url}`)
@@ -67,7 +72,8 @@ try {
             })
             .then(data => {
                 var jobs = {}
-                data.jobs.filter(job => job.id !== 'completed').forEach(job => {
+                data.jobs.filter(job => job.status == 'completed').forEach(job => {
+                    console.log(`adding job '${job.id}/${job.name}' with status '${job.status}' and conclusion '${job.conclusion}'`)
                     jobs[job.id] = {
                         job_id: job.id,
                         job_name: job.name,
@@ -88,22 +94,21 @@ try {
                         })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error(`Job log failed with status ${response.status}`)
+                                throw new Error(`Log request failed with status ${response.status} for job id '${job_id}'`)
                             }
                             return response.text()
                         })
                         .then(data => {
-                            core.setOutput("result", data);
+                            console.log(`Writing data, length=${data.length}`)
+                            if (outfile) { fs.writeFileSync(outfile, data) }
+                            else { core.setOutput("result", data) }
                         })
-
                     } catch (error) {
-                          core.setFailed(error.message)
-                      }
+                        core.setFailed(error.message)
+                    }
                 }
             })
         })
-
-
 } catch (error) {
     core.setFailed(error.message)
 }
